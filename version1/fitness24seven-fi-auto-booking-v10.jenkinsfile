@@ -1,0 +1,63 @@
+pipeline
+{
+    /*
+     * Jenkins job definition for auto sign-up for classes at Fitness24seven gym
+     * If you like it, you can send thank you via https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HNJEAWP87ZT3S&source=url
+     */
+
+    parameters
+    {
+        string(name: 'Gym', defaultValue: "Jyväskylä Kauppakulma PLUS", description: 'Gym name from the list on page https://boka.fitness24seven.com/brp/mesh/selectUnit.action')
+        string(name: 'Day', defaultValue: "perjantai", description: 'Name day for ')
+        string(name: 'Activity', defaultValue: "BodyPump", description: 'Which class you want to join? Name start with this.')
+        string(name: 'JenkinsCredentialsID', defaultValue: "F24-login", description: 'Specify username and password in Jenkins vault at http://localhost:8080/credentials/')
+    }
+
+    triggers //get start time string from crontab.guru
+    {
+        cron('30 17 * * 4') //every thursday at 17:30
+    }
+
+    agent
+    {
+        node
+        {
+            label 'windows'
+        }
+    }
+
+    stages
+    {
+        stage('Run-Robot')
+        {
+            steps
+            {
+                echo "Let's book group class in Fitness24seven at ${params.Gym}"
+                script
+                {
+                    currentBuild.displayName = "F24-${params.Day} (${env.BUILD_NUMBER})"
+                    currentBuild.description = "Book: ${params.Activity}"
+                }
+
+                withCredentials([
+                    usernamePassword(credentialsId: "${params.JenkinsCredentialsID}", usernameVariable: 'f24username', passwordVariable: 'f24password')
+                ]){
+                    powershell("C:\\windows\\sysnative\\windowspowershell\\v1.0\\powershell.exe robot --variable Gym:\"'${params.Gym}'\" --variable Day:\"'${params.Day}'\" --variable Activity:\"'${params.Activity}'\" --variable UserName:\"'${f24username}'\" --variable UserPass:\"'${f24password}'\" --log NONE --output NONE --report NONE ${WORKSPACE}\\fitness24seven-fi-auto-booking.robot")
+                }
+            }
+        }
+    }
+
+    post
+    {
+        success
+        {
+           echo "Send email success"
+        }
+
+        failure
+        {
+           echo "Send email failure"
+        }
+    }
+}
