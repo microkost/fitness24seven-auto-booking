@@ -42,7 +42,7 @@ pipeline
                 withCredentials([
                     usernamePassword(credentialsId: "${params.JenkinsCredentialsID}", usernameVariable: 'f24username', passwordVariable: 'f24password')
                 ]){
-                    powershell("C:\\windows\\sysnative\\windowspowershell\\v1.0\\powershell.exe robot --variable Gym:\"'${params.Gym}'\" --variable Day:\"'${params.Day}'\" --variable Activity:\"'${params.Activity}'\" --variable UserName:\"'${f24username}'\" --variable UserPass:\"'${f24password}'\" --log NONE --output NONE --report NONE ${WORKSPACE}\\fitness24seven-fi-auto-booking.robot")
+                    powershell("powershell.exe robot --variable Gym:\"'${params.Gym}'\" --variable Day:\"'${params.Day}'\" --variable Activity:\"'${params.Activity}'\" --variable UserName:\"'${f24username}'\" --variable UserPass:\"'${f24password}'\" --log NONE --output NONE --report NONE ${WORKSPACE}\\fitness24seven-fi-auto-booking.robot")
                 }
             }
         }

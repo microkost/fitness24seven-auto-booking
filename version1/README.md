@@ -1,6 +1,6 @@
 # Automatic login for group classes in Fitness24seven
 
-This version was working for the previous website F24 was using before the year 2020. It is not anymore up-to-date for the 2022 website.
+This version was working for the previous website F24 that was in use before the year 2020. It is not anymore up-to-date for the 2022 website.
 
 I stopped to be a member of F24 due to a lack of empathy for the COVID-19 situation when F24 kept open without any restrictions even though other business were shut down.
 

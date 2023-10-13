@@ -1,5 +1,4 @@
-# execute in cmd> as
-# robot fitness24seven-fi-auto-booking.robot
+# execute in cmd> robot fitness24seven-fi-auto-booking.robot --log NONE --output NONE --report NONE
 # OR cmd> with parameters as
 # robot --variable Gym:'Helsinki Hakaniemi' --variable Day:maanantai --variable Activity:BodyPump --log NONE --output NONE --report NONE fitness24seven-fi-auto-booking.robot
 # send thank you via https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HNJEAWP87ZT3S&source=url if you like it
@@ -14,70 +13,97 @@ Library         Selenium2Library
 Library  		String
 
 *** Variables ***
-${Gym}              Jyväskylä Kauppakulma PLUS
+${Country}          FINLAND
+${City}             TAMPERE
+${Gym}              Tampere Keskusta GROUP
 ${Day}              maanantai
-${Activity}         BodyPump
-${UserName}         email@email.com
+#${Activity}         BodyPump
+${UserName}         name.surname@gmail.com     #WARNING
 ${UserPass}         secretpassword123    #WARNING WARNING WARNING
-${URL}              https://boka.fitness24seven.com/brp/mesh/selectUnit.action
-${BROWSER}          chrome
+${URL}              https://fi.fitness24seven.com    #no closing backslash
+${BROWSER}          edge
 ${maxActLen}        10      #cut activity name
 ${maxActNum}        10      #how many activities are max in table
 
 *** Test Cases ***
+#Network scanning
+#    [Documentation]    Network details about execution machine
+#    ${ip}=             Evaluate [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]    socket
+#    Log To Console     Private IP is: ${ip}
+#    Open Browser       http://api.hostip.info/get_json.php     ${BROWSER}
+#    ${ippublic}=       Get Text       //html/body/pre         #get the IP address text
+#    Log To Console     Public networking details are: ${ippublic}
+#    Close Browser
+
 Open F24
     [Documentation]    Open the Fitness24/7 page at ${URL}
-    Open Browser    ${URL}    ${BROWSER}
+    Open Browser    ${URL}/kirjaudu-sisaan/    ${BROWSER}
+    Wait Until Element Is Visible    //*[@id="onetrust-accept-btn-handler"]    timeout=3s
+    Click element                   //*[@id="onetrust-accept-btn-handler"]     #Accept cookies
     Maximize Browser Window
 
 Login F24
-    [Documentation]     First and second screen, gym selection and login
-    Select From List By Label       //*[@id="selectUnitBody"]/div/div[3]/div/div/form/table/tbody/tr[1]/td[2]/select        ${Gym}
-    Click element                   //*[@id="selectUnitBody"]/div/div[3]/div/div/form/table/tbody/tr[2]/td[2]/div/input     #click Välj
-    #Sleep   						1 seconds
-    Input Text                      //*[@id="username"]     ${UserName}
-    Input Text                      //*[@id="loginForm"]/table/tbody/tr[2]/td[2]/input      ${UserPass}
-    Click element                   //*[@id="loginForm"]/table/tbody/tr[3]/td[2]/div/input      #click Jatka
-    Click element                   //*[@id="bookGroupActivity"]        #click Varaa ryhmäliikuntatunti
-    #Sleep   						1 seconds
+    [Documentation]     Login to Fitness24Seven website
+    Click element                   //html/body/header/div[1]/div/nav/ul[3]/li/a     #Kirjaudu sisään open login form
+    Wait Until Element Is Visible                    //*[@id="wmp"]/div/div[2]/div/div/div/div/button
+    Click element                   //*[@id="wmp"]/div/div[2]/div/div/div/div/button     #Kirjaudu sisään button
+    Wait Until Element Is Visible                   //*[@id="api"]/div[1]/h1
+    Input Text                      //*[@id="email"]        ${UserName}
+    Input Text                      //*[@id="password"]     ${UserPass}
+    Click element                   //*[@id="next"]     #click login
+    Sleep   						1 seconds
 
-Book activity F24
-    [Documentation]     Searching for activities by iterating over table in selected day
-    Click element       //*[@id="showGroupActivitiesDateForm"]/table/tbody/tr[1]/td[2]/a[contains(text(),'${Day}')]
-    : FOR   ${index}    IN RANGE    0   ${maxActNum}
-        \   ${valid}    Run keyword and return status   Get Text    //*[@id="showGroupActivitiesBody"]/div[1]/div[3]/div/div/table/tbody/tr[${index}]/td[2]
-        \   Run keyword If  '${valid}' == 'True'    FindRequestedActivity     ${index}    ${activity}
+Select location
+    Go To    ${URL}/kirjaudu-sisaan/aikataulu/      #change to booking page
+    Sleep                   3 seconds               #do not use geo location "Löydä lähin kuntosalini"
+    Wait Until Element Is Visible       //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[1]/h4    #load maa header => always 'not visible after 5 seconds'
+    Click Element                //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div/span/span/svg/path    #click maa header
+    Click Element                //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[2]/ul/li[1]/label[2]    #click HARDCODED first element
+    Log To Console      Clicked hardcoded country
+    Click Element               xpath=(//label[@for="checkbox-Finland-input"])
+    Log To Console      Clicked country
+    Sleep                   5 seconds
+    Wait Until Element Is Visible       //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[3]/div[1]/h4
+    Log To Console      Kaupunki visible
+    Click Element    xpath=(//h4[@class="c-filter-dropdown__title"])[2]
+    Click Element    xpath=(//span[@class="c-filter-checkbox--checkmark"])[10] #
+    Click Element    xpath=(//h4[@class="c-filter-dropdown__title"])[3]
+    Click Element    xpath=(//span[@class="c-filter-checkbox--checkmark"])[13]
+    Click Element    xpath=(//h3[@class="c-weekday-switcher__weekday-container__day-number"])[10]
+    Click Element    xpath=(//h3[@class="c-weekday-switcher__weekday-container__day-number"])[9]
 
-*** Test Cases ***
-Report booking
-    Log To Console    \nInform user ${UserName}
+    #Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[1]/div/button/span        #wait for page load: button Löydä lähin kuntosalini
+    #Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[1]            #loading list Maa
+    #Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]
+    #Click Element                       //svg[@class="injected-svg c-icon c-icon--close c-toaster__close-icon"]            #close virhe warning
+    #Click Element                       //span[@class="c-filter-checkbox--checkmark"]
+    #Click Element    //path
+    #Click Element    //svg[@class="injected-svg c-icon c-icon--select-dropdown-arrow c-filter-dropdown__filter-icon"]
+    #Click Element    xpath=(//h4[@class="c-filter-dropdown__title"])[2]
+    #Click Element    //svg[@class="injected-svg c-icon c-icon--select-dropdown-arrow c-filter-dropdown__filter-icon"]
+    #Click Element
+    #Click Element    xpath=(//h4[@class="c-filter-dropdown__title"])[2]
+    #Click Element    //label[@for="checkbox-TAMPERE-input"]
+    #Click Element    //div[@class="c-filter-dropdown__button c-filter-dropdown__button--clickable"]
+    #Click Element    //label[@for="checkbox-Tampere Keskusta GROUP-input"]
+    #Click Element    xpath=(//h3[@class="c-weekday-switcher__weekday-container__day-number"])[11]
+    #Click Element                       //label[@for="checkbox-Finland-input"]
+    #Select Checkbox                      //*[@id="checkbox-${Country}-input"]     #tick ${Country}
+    #Log To Console                       country ${Country} selected
+    #Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[3]/div[1]/h4            #loading list Kaupunki
+#click Kaupunki ${City}
+    Click element                       //*[@id="checkbox-${City}-input"]
+    Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[4]/div/h4            #loading list Kuntosali
+    Log To Console                       Kaupunki ${City} selected
+#click Kuntosali ${Gym}
+    #Click element                       //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[4]/div[2]/ul/li/label[1]/span
+    #Wait Until Element Is Visible
+    #Sleep   						4 seconds
 
-Close case
-    [Documentation]    End session
-    #do screenshot!
-    Click element       //*[@id="logout"]/a     #logoff from website
-    Close Browser
+Select timetable
+    #Calendar ${Day}
+    #Sleep   						4 seconds
 
-*** Keywords ***
-FindRequestedActivity
-    [Documentation]     If activity is requested one then start booking at corect index
-    [Arguments]    ${index}   ${activity1}
-    ${activity2}=       Get Activity   ${index}
-    ${valid}    Run keyword and return status     Should Start With    ${activity2}    ${activity1}
-    Run keyword If      '${valid}' == 'True'   Make Booking    ${index}
-    #...     ELSE    Log To Console        > Lesson ${activity2} located at ${index} is NOT ${activity1}
+#Book activity F24
+    #[Documentation]     Select from the list
 
-Get Activity
-    [Documentation]     Fetch activity name from table and cut it to be shorter
-    [Arguments]    ${index}
-    ${activityTest}=    Get Text    //*[@id="showGroupActivitiesBody"]/div[1]/div[3]/div/div/table/tbody/tr[${index}]/td[2]
-    ${length} =  Get Length  ${activityTest}
-    ${activityShort}=   Get Substring   ${activityTest}    0    ${maxActLen}
-    [Return]    ${activityShort}
-
-Make Booking
-    [Arguments]     ${correctIndex}
-    Log to Console      Lesson ${Activity} is under index ${correctIndex}
-    ${bookORqueue}      Get Text    //*[@id="showGroupActivitiesBody"]/div[1]/div[3]/div/div/table/tbody/tr[${correctIndex}]/td[9]/a
-    Log to Console      Booking status is ${bookORqueue}
-    Click element       //*[@id="showGroupActivitiesBody"]/div[1]/div[3]/div/div/table/tbody/tr[${correctIndex}]/td[9]/a
