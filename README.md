@@ -1,6 +1,11 @@
 # Automatic login for group classes in Fitness24seven
 
-Current version is unfinished due to changes in [access system](https://forum.fitness24seven.se/org/fitness24seven-se/d/mobile-access-entry-system/) during 2023/10
+> [!CAUTION]
+> This tool is deprecated. Web booking option was removed.
+
+The company introduced changes in the [access system](https://forum.fitness24seven.se/org/fitness24seven-se/d/mobile-access-entry-system/) in late 2023.
+[Booking of group classes](https://fi.fitness24seven.com/palvelut/ryhmaliikunta/ryhmaliikuntatunnin-varaus/) was moved to be completely handled by their mobile app.
+This technology solution cannot handle the change and it is discontinued from support.
 
 ## Usage on Windows
 
@@ -27,7 +32,7 @@ When starting the PowerShell script for the first time, there might be an error 
 
 ### Browser control
 
-Download, unpack and place to PATH accessible folder (e.g. C:\Program files\Chromedriver) one or all following browser drivers: Chromedriver / Geckodriver / [Microsoft Edge WebDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/) based on your local browser preference/presence. These components must be always up-to-date.
+Download, unpack and place to [PATH accessible folder](https://answers.microsoft.com/en-us/windows/forum/all/setting-path-variable-in-environment-variables/4132bef0-9132-4da9-81ac-3caa49d24cbe) (e.g. C:\Program files\Chromedriver) one or all following browser drivers: Chromedriver / Geckodriver / [Microsoft Edge WebDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/) based on your local browser preference/presence. These components must be *always up-to-date*.
 
 ## Donation
 

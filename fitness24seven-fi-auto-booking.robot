@@ -19,7 +19,7 @@ ${Gym}              Tampere Keskusta GROUP
 ${Day}              maanantai
 #${Activity}         BodyPump
 ${UserName}         name.surname@gmail.com     #WARNING
-${UserPass}         secretpassword123    #WARNING WARNING WARNING
+${UserPass}         secretpassword123    #WARNING
 ${URL}              https://fi.fitness24seven.com    #no closing backslash
 ${BROWSER}          edge
 ${maxActLen}        10      #cut activity name
@@ -37,7 +37,7 @@ ${maxActNum}        10      #how many activities are max in table
 
 Open F24
     [Documentation]    Open the Fitness24/7 page at ${URL}
-    Open Browser    ${URL}/kirjaudu-sisaan/    ${BROWSER}
+    Open Browser    ${URL}/kirjaudu-sisaan/yleiskatsaus/    ${BROWSER}
     Wait Until Element Is Visible    //*[@id="onetrust-accept-btn-handler"]    timeout=3s
     Click element                   //*[@id="onetrust-accept-btn-handler"]     #Accept cookies
     Maximize Browser Window
@@ -53,54 +53,59 @@ Login F24
     Click element                   //*[@id="next"]     #click login
     Sleep   						1 seconds
 
-Select location
-    Go To    ${URL}/kirjaudu-sisaan/aikataulu/      #change to booking page
-    Sleep                   3 seconds               #do not use geo location "Löydä lähin kuntosalini"
-    Wait Until Element Is Visible       //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[1]/h4    #load maa header => always 'not visible after 5 seconds'
-    Click Element                //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div/span/span/svg/path    #click maa header
-    Click Element                //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[2]/ul/li[1]/label[2]    #click HARDCODED first element
-    Log To Console      Clicked hardcoded country
-    Click Element               xpath=(//label[@for="checkbox-Finland-input"])
-    Log To Console      Clicked country
-    Sleep                   5 seconds
-    Wait Until Element Is Visible       //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[3]/div[1]/h4
-    Log To Console      Kaupunki visible
-    Click Element    xpath=(//h4[@class="c-filter-dropdown__title"])[2]
-    Click Element    xpath=(//span[@class="c-filter-checkbox--checkmark"])[10] #
-    Click Element    xpath=(//h4[@class="c-filter-dropdown__title"])[3]
-    Click Element    xpath=(//span[@class="c-filter-checkbox--checkmark"])[13]
-    Click Element    xpath=(//h3[@class="c-weekday-switcher__weekday-container__day-number"])[10]
-    Click Element    xpath=(//h3[@class="c-weekday-switcher__weekday-container__day-number"])[9]
+Support discontinued
+    Log To Console                  This is all, nothing more to do. Aikataulu option not available.
+    Sleep   						5 seconds
+    Close Browser
 
-    #Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[1]/div/button/span        #wait for page load: button Löydä lähin kuntosalini
-    #Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[1]            #loading list Maa
-    #Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]
-    #Click Element                       //svg[@class="injected-svg c-icon c-icon--close c-toaster__close-icon"]            #close virhe warning
-    #Click Element                       //span[@class="c-filter-checkbox--checkmark"]
-    #Click Element    //path
-    #Click Element    //svg[@class="injected-svg c-icon c-icon--select-dropdown-arrow c-filter-dropdown__filter-icon"]
+#Select location
+    #Go To    ${URL}/kirjaudu-sisaan/aikataulu/      #change to booking page
+    #Sleep                   3 seconds               #do not use geo location "Löydä lähin kuntosalini"
+    #Wait Until Element Is Visible       //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[1]/h4    #load maa header => always 'not visible after 5 seconds'
+    #Click Element                //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div/span/span/svg/path    #click maa header
+    #Click Element                //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[2]/ul/li[1]/label[2]    #click HARDCODED first element
+    #Log To Console      Clicked hardcoded country
+    #Click Element               xpath=(//label[@for="checkbox-Finland-input"])
+    #Log To Console      Clicked country
+    #Sleep                   5 seconds
+    #Wait Until Element Is Visible       //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[3]/div[1]/h4
+    #Log To Console      Kaupunki visible
     #Click Element    xpath=(//h4[@class="c-filter-dropdown__title"])[2]
-    #Click Element    //svg[@class="injected-svg c-icon c-icon--select-dropdown-arrow c-filter-dropdown__filter-icon"]
-    #Click Element
-    #Click Element    xpath=(//h4[@class="c-filter-dropdown__title"])[2]
-    #Click Element    //label[@for="checkbox-TAMPERE-input"]
-    #Click Element    //div[@class="c-filter-dropdown__button c-filter-dropdown__button--clickable"]
-    #Click Element    //label[@for="checkbox-Tampere Keskusta GROUP-input"]
-    #Click Element    xpath=(//h3[@class="c-weekday-switcher__weekday-container__day-number"])[11]
-    #Click Element                       //label[@for="checkbox-Finland-input"]
-    #Select Checkbox                      //*[@id="checkbox-${Country}-input"]     #tick ${Country}
-    #Log To Console                       country ${Country} selected
-    #Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[3]/div[1]/h4            #loading list Kaupunki
+    #Click Element    xpath=(//span[@class="c-filter-checkbox--checkmark"])[10] #
+    #Click Element    xpath=(//h4[@class="c-filter-dropdown__title"])[3]
+    #Click Element    xpath=(//span[@class="c-filter-checkbox--checkmark"])[13]
+    #Click Element    xpath=(//h3[@class="c-weekday-switcher__weekday-container__day-number"])[10]
+    #Click Element    xpath=(//h3[@class="c-weekday-switcher__weekday-container__day-number"])[9]
+    # debug below
+        #Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[1]/div/button/span        #wait for page load: button Löydä lähin kuntosalini
+        #Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]/div[1]            #loading list Maa
+        #Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[2]
+        #Click Element                       //svg[@class="injected-svg c-icon c-icon--close c-toaster__close-icon"]            #close virhe warning
+        #Click Element                       //span[@class="c-filter-checkbox--checkmark"]
+        #Click Element    //path
+        #Click Element    //svg[@class="injected-svg c-icon c-icon--select-dropdown-arrow c-filter-dropdown__filter-icon"]
+        #Click Element    xpath=(//h4[@class="c-filter-dropdown__title"])[2]
+        #Click Element    //svg[@class="injected-svg c-icon c-icon--select-dropdown-arrow c-filter-dropdown__filter-icon"]
+        #Click Element
+        #Click Element    xpath=(//h4[@class="c-filter-dropdown__title"])[2]
+        #Click Element    //label[@for="checkbox-TAMPERE-input"]
+        #Click Element    //div[@class="c-filter-dropdown__button c-filter-dropdown__button--clickable"]
+        #Click Element    //label[@for="checkbox-Tampere Keskusta GROUP-input"]
+        #Click Element    xpath=(//h3[@class="c-weekday-switcher__weekday-container__day-number"])[11]
+        #Click Element                       //label[@for="checkbox-Finland-input"]
+        #Select Checkbox                      //*[@id="checkbox-${Country}-input"]     #tick ${Country}
+        #Log To Console                       country ${Country} selected
+        #Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[3]/div[1]/h4            #loading list Kaupunki
 #click Kaupunki ${City}
-    Click element                       //*[@id="checkbox-${City}-input"]
-    Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[4]/div/h4            #loading list Kuntosali
-    Log To Console                       Kaupunki ${City} selected
+    #Click element                       //*[@id="checkbox-${City}-input"]
+    #Wait Until Element Is Visible        //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[4]/div/h4            #loading list Kuntosali
+    #Log To Console                       Kaupunki ${City} selected
 #click Kuntosali ${Gym}
     #Click element                       //*[@id="wmp"]/div/div[3]/div/div/div[1]/div[1]/div[2]/div[1]/div/div[4]/div[2]/ul/li/label[1]/span
     #Wait Until Element Is Visible
     #Sleep   						4 seconds
 
-Select timetable
+#Select timetable
     #Calendar ${Day}
     #Sleep   						4 seconds
 
